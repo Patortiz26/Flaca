@@ -33,8 +33,10 @@ def df_to_pdf(df):
     pdf_buffer.seek(0)
     return pdf_buffer
 
-st.title('Excel/CSV a PDF con Fuente Pequeña')
+st.title('Programa Exclusivo Sandra Vargas')
 st.write('Programa para el uso exclusivo de Sandra Vargas')
+st.write('Desarrollado por Patricio Ortiz: ptricio.ortiz.v@ug.uchile.cl')
+
 archivo_cargado = st.file_uploader("Sube un archivo Excel o CSV", type=['xlsx', 'csv'])
 nombre_archivo_salida = st.text_input("Nombre del archivo de salida (sin extensión)", "datos_filtrados")
 
