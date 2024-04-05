@@ -5,8 +5,6 @@ from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from io import BytesIO
 
-df = pd.read_csv('crv.csv')
-print(df)
 def df_to_pdf(df):
     # Crear un objeto BytesIO para el PDF
     pdf_buffer = BytesIO()
