@@ -1,48 +1,61 @@
-import streamlit as st
 import pandas as pd
+import streamlit as st
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from io import BytesIO
 
-# Función para convertir los datos a formato Excel
-def a_excel(df):
-    output = BytesIO()
-    # Utilizar el contexto with para asegurar que el writer se maneje correctamente
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Hoja1')
-    # No es necesario llamar a save en el writer, pero sí en el objeto BytesIO
-    output.seek(0)  # Regresar al inicio del stream
-    return output.getvalue()
+def df_to_pdf(df):
+    # Crear un objeto BytesIO para el PDF
+    pdf_buffer = BytesIO()
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+    elements = []
 
-st.title('Selector de Columnas de Excel y CSV')
+    # Convertir DataFrame a una lista de listas para ReportLab
+    data = [df.columns.tolist()] + df.values.tolist()
+    table = Table(data, repeatRows=1)
 
-# Mensaje personalizado en la parte superior
-st.header('Flaquita, te quiero mucho')
+    # Estilo de la tabla, incluyendo tamaño de fuente más pequeño
+    table_style = TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+        ('BACKGROUND', (0,0), (-1,0), colors.grey),
+        ('FONTSIZE', (0,0), (-1,-1), 8),  # Establecer el tamaño de la fuente aquí
+    ])
+    table.setStyle(table_style)
 
-# Entrada para que el usuario especifique el nombre del archivo de salida
-nombre_archivo_salida = st.text_input("Ingresa el nombre del archivo de salida sin la extensión", "columnas_seleccionadas")
+    elements.append(table)
+    doc.build(elements)
 
-# Cargar archivo Excel o CSV
-archivo_cargado = st.file_uploader("Elige un archivo", type=['xlsx', 'csv'])
+    # Mover el puntero al inicio del BytesIO
+    pdf_buffer.seek(0)
+    return pdf_buffer
+
+st.title('Excel/CSV a PDF con Fuente Pequeña')
+st.write('Programa para el uso exclusivo de Sandra Vargas')
+archivo_cargado = st.file_uploader("Sube un archivo Excel o CSV", type=['xlsx', 'csv'])
+nombre_archivo_salida = st.text_input("Nombre del archivo de salida (sin extensión)", "datos_filtrados")
+
 if archivo_cargado is not None:
-    # Determinar el tipo de archivo y leerlo
     if archivo_cargado.name.endswith('.xlsx'):
         df = pd.read_excel(archivo_cargado)
     elif archivo_cargado.name.endswith('.csv'):
         df = pd.read_csv(archivo_cargado)
     
-    # Columnas a mantener
     columnas_a_mantener = ['Tipo Compra', 'RUT Proveedor', 'Razon Social', 'Folio', 'Fecha Docto', 'Monto Neto', 'Monto IVA Recuperable', 'Monto Total']
     
-    # Verificar si el archivo cargado contiene las columnas requeridas
     if all(columna in df.columns for columna in columnas_a_mantener):
-        df_columnas_seleccionadas = df[columnas_a_mantener]
+        df_filtrado = df[columnas_a_mantener]
+        st.write(df_filtrado)
         
-        st.write("Datos de las Columnas Seleccionadas:")
-        st.dataframe(df_columnas_seleccionadas)
+        # Crear un PDF a partir del DataFrame filtrado
+        pdf_output = df_to_pdf(df_filtrado)
         
-        # Enlace para descargar los datos filtrados
-        df_xlsx = a_excel(df_columnas_seleccionadas)
-        st.download_button(label='📥 Descargar Columnas Seleccionadas',
-                           data=df_xlsx,
-                           file_name=f'{nombre_archivo_salida}.xlsx')
+        st.download_button(label="Descargar PDF",
+                           data=pdf_output,
+                           file_name=f"{nombre_archivo_salida}.pdf",
+                           mime="application/pdf")
     else:
-        st.error("El archivo cargado no contiene las columnas requeridas.")
+        st.error("El archivo cargado no contiene todas las columnas requeridas.")
