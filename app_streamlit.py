@@ -38,7 +38,7 @@ st.write('Programa para el uso exclusivo de Sandra Vargas')
 st.write('Desarrollado por Patricio Ortiz: ptricio.ortiz.v@ug.uchile.cl')
 
 archivo_cargado = st.file_uploader("Sube un archivo Excel o CSV", type=['xlsx', 'csv'])
-nombre_archivo_salida = st.text_input("Nombre del archivo de salida (sin extensión)", "datos_filtrados")
+nombre_archivo_salida = st.text_input("Nombre del archivo de salida (sin extensión)", "")
 
 if archivo_cargado is not None:
     if archivo_cargado.name.endswith('.xlsx'):
