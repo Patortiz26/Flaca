@@ -5,11 +5,12 @@ from io import BytesIO
 # Función para convertir los datos a formato Excel
 def a_excel(df):
     output = BytesIO()
-    writer = pd.ExcelWriter(output, engine='openpyxl')
-    df.to_excel(writer, index=False, sheet_name='Hoja1')
-    writer.save()
-    processed_data = output.getvalue()
-    return processed_data
+    # Utilizar el contexto with para asegurar que el writer se maneje correctamente
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Hoja1')
+    # No es necesario llamar a save en el writer, pero sí en el objeto BytesIO
+    output.seek(0)  # Regresar al inicio del stream
+    return output.getvalue()
 
 st.title('Selector de Columnas de Excel y CSV')
 
