@@ -5,6 +5,8 @@ from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from io import BytesIO
 
+df = pd.read_csv('crv.csv')
+print(df)
 def df_to_pdf(df):
     # Crear un objeto BytesIO para el PDF
     pdf_buffer = BytesIO()
@@ -44,7 +46,7 @@ if archivo_cargado is not None:
     if archivo_cargado.name.endswith('.xlsx'):
         df = pd.read_excel(archivo_cargado)
     elif archivo_cargado.name.endswith('.csv'):
-        df = pd.read_csv(archivo_cargado)
+        df = pd.read_csv(archivo_cargado, sep=';')
     
     columnas_a_mantener = ['Tipo Compra', 'RUT Proveedor', 'Razon Social', 'Folio', 'Fecha Docto', 'Monto Neto', 'Monto IVA Recuperable', 'Monto Total']
     
