@@ -30,8 +30,8 @@ def df_to_pdf(df):
     table_style = TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.white),
-        ('BOX', (0,0), (-1,-1), 0.5, colors.white),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray),
+        ('BOX', (0,0), (-1,-1), 0.5, colors.gray),
         ('BACKGROUND', (0,0), (-1,0), colors.white),
         ('FONTSIZE', (0,0), (-1,-1), 8),  # Establecer el tamaño de la fuente aquí
     ])
