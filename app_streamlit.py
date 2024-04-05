@@ -30,9 +30,9 @@ def df_to_pdf(df):
     table_style = TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.grey),
-        ('BOX', (0,0), (-1,-1), 0.5, colors.grey),
-        ('BACKGROUND', (0,0), (-1,0), colors.grey),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.white),
+        ('BOX', (0,0), (-1,-1), 0.5, colors.white),
+        ('BACKGROUND', (0,0), (-1,0), colors.white),
         ('FONTSIZE', (0,0), (-1,-1), 8),  # Establecer el tamaño de la fuente aquí
     ])
     table.setStyle(table_style)
@@ -49,7 +49,7 @@ st.write('Programa para el uso exclusivo de Sandra Vargas')
 st.write('Desarrollado por Patricio Ortiz: ptricio.ortiz.v@ug.uchile.cl')
 
 archivo_cargado = st.file_uploader("Sube un archivo Excel o CSV", type=['xlsx', 'csv'])
-nombre_archivo_salida = st.text_input("Nombre del archivo de salida (sin extensión)", "datos_filtrados")
+nombre_archivo_salida = st.text_input("Nombre del archivo de salida", "")
 
 if archivo_cargado is not None:
     if archivo_cargado.name.endswith('.xlsx'):
