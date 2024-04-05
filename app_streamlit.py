@@ -11,19 +11,22 @@ def a_excel(df):
     processed_data = output.getvalue()
     return processed_data
 
-st.title('Selector de Columnas de Excel')
+st.title('Selector de Columnas de Excel y CSV')
 
 # Mensaje personalizado en la parte superior
 st.header('Flaquita, te quiero mucho')
 
 # Entrada para que el usuario especifique el nombre del archivo de salida
-nombre_archivo_salida = st.text_input("Ingresa el nombre del archivo de salida sin la extensión", "ESCRIBE AQUI")
+nombre_archivo_salida = st.text_input("Ingresa el nombre del archivo de salida sin la extensión", "columnas_seleccionadas")
 
-# Cargar archivo Excel
-archivo_cargado = st.file_uploader("Elige un archivo", type=['xlsx'])
+# Cargar archivo Excel o CSV
+archivo_cargado = st.file_uploader("Elige un archivo", type=['xlsx', 'csv'])
 if archivo_cargado is not None:
-    # Leer el archivo Excel
-    df = pd.read_excel(archivo_cargado)
+    # Determinar el tipo de archivo y leerlo
+    if archivo_cargado.name.endswith('.xlsx'):
+        df = pd.read_excel(archivo_cargado)
+    elif archivo_cargado.name.endswith('.csv'):
+        df = pd.read_csv(archivo_cargado)
     
     # Columnas a mantener
     columnas_a_mantener = ['Tipo Compra', 'RUT Proveedor', 'Razon Social', 'Folio', 'Fecha Docto', 'Monto Neto', 'Monto IVA Recuperable', 'Monto Total']
@@ -37,7 +40,7 @@ if archivo_cargado is not None:
         
         # Enlace para descargar los datos filtrados
         df_xlsx = a_excel(df_columnas_seleccionadas)
-        st.download_button(label='📥 Descargar Columnas Seleccionadas en Excel',
+        st.download_button(label='📥 Descargar Columnas Seleccionadas',
                            data=df_xlsx,
                            file_name=f'{nombre_archivo_salida}.xlsx')
     else:
